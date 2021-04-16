@@ -1,0 +1,10 @@
+{
+    "/// IMPORTANT ///": "replace YOUR_EARNING_ADDRESS_PUBLIC_KEY_HERE & YOUR_EARNING_ADDRESS_SECRET_KEY_HERE with the XRP address you would like to send the earnings to. Please note that this address needs at least 25 XRP in the balance.",
+    "earningAddress": {
+        "publicKey": "rN4RioabywPmRtDztPE9qhwiAkGJT5dT1b",
+        "secretKey": "snMByMKZ5DsreB3dd9677Atv8RthU"
+    },
+    "knownAddresses": [
+        
+    ]
+}

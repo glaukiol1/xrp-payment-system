@@ -1,0 +1,16 @@
+{
+    "//": "the id of the product is the key, and the value is the cost in XRP",
+    "products": {
+        "1": 1,
+        "2": 3,
+        "3": 5,
+        "4": 10
+    },
+    "///": "the names of the products",
+    "product-names": {
+        "1": "100 Badcoins",
+        "2": "300 Badcoins",
+        "3": "500 Badcoins",
+        "4": "1000 Badcoins"
+    }
+}
