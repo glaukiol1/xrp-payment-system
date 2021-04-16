@@ -3,24 +3,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 const express = require("express");
 const http = require("http");
+const https = require('https')
 const WebSocket = require("ws");
 const fs = require('fs')
 const app = express();
 const path = require('path')
 const uuid = require('uuid').v1;
-//initialize a simple http server
-const server = http.createServer(app);
-//initialize the WebSocket server instance
-const wss = new WebSocket.Server({ server });
 app.use(express.static(path.join(__dirname, 'public')))
 
 // Load config files |||| ../config
 const addresses = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/addresses.json')))
 const products = JSON.parse(fs.readFileSync(path.join(__dirname, '../config/products.json')))
+const process_opt = JSON.parse ( fs.readFileSync(path.join(__dirname, '../config/process-opt.json')) )
+
+const getProtocol = () => {
+    if (process_opt.PROTOCOL !== 'https'){
+        return http
+    } else {
+        return https
+    }
+}
+
+const DEFAULT_PORT = 3003;
+const PORT = process_opt.PORT
+
+const server = getProtocol().createServer(app);
+const wss = new WebSocket.Server({ server });
+
 const map = products.products;
 const map_names=products["product-names"]
 const earning_address=addresses.earningAddress;
-console.log(map,map_names)
+
 app.get('/', (req, res) => {
     if (req.query.productId) {
         if (req.query.isFinal) {
@@ -80,8 +93,8 @@ wss.on('connection', (ws) => {
     ws.send('CONNECTION SUCCESSFULL');
 });
 //start our server
-server.listen(3003, () => {
-    console.log(`Server started on port ${3003} :)`);
+server.listen(PORT||DEFAULT_PORT, () => {
+    console.log(`Server started on port ${PORT||DEFAULT_PORT} :)`);
 });
 // app.get('/', (req,res)=>{
 // })
