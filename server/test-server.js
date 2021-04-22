@@ -32,19 +32,21 @@ const wss = new WebSocket.Server({ server });
 
 const map = products.products;
 const map_names=products["product-names"]
-const earning_address=addresses.earningAddress;
 
-app.get('/', (req, res) => {
+app.get('/payment', (req, res) => {
     if (req.query.productId) {
         if (req.query.isFinal) {
             res.status(200).sendFile(path.join(__dirname, 'index.html'))
         } else {
             
-            res.redirect(`/?prodName=${map_names[req.query.productId]}&productId=${req.query.productId}&id=${uuid()}&isFinal=true`)
+            res.redirect(`/?prodName=${map_names[req.query.productId]}&productId=${req.query.productId}&id=${uuid()}&amt=${map[req.query.productId]}isFinal=true`)
         }
     } else {
-        res.status(400).send('<h1>400 Bad Request</h1><br><p>Missing Query Parm `productId`</p>')
+        res.status(400).send('<h1>400 Bad Request</h1><br><p>Missing Query Parm `productId`</p><a href="https://github.com/glaukiol1/xrp-payment-system">GitHub Repo</a>')
     }
+})
+app.get('/payment-port-get', (req,res)=>{
+    res.status(200).json({PORT: PORT||DEFAULT_PORT})
 })
 wss.on('connection', (ws) => {
     var amt;
@@ -67,13 +69,11 @@ wss.on('connection', (ws) => {
         ws.send(`Recived ${message}, setting params!`);
         amt = map[parseInt(new URL(message).searchParams.get('productId'))]
         id = new URL(message).searchParams.get('id')
-        var child = child_process_1.exec(`xrp-payment ${amt} ${id}`);
+        var child = child_process_1.exec(`xrp-payment ${id} ${process_opt.DEV}`);
         child.stdout.on('data', function (data) {
             console.log(data)
             if (data.indexOf('ADDRESS') !== -1) {
-                var address = data.split(' ')[1].split('#')[0];
-                var amount = data.split(' ')[1].split('#')[1];
-                ws.send(`AMOUNT: ${amount}`);
+                var address = data.split(' ')[1]
                 ws.send(`ADDRESS ${address}`);
             }
             else if (data.indexOf('SUCCESS ') !== -1) {

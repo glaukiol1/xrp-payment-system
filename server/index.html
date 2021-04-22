@@ -1,0 +1,108 @@
+<html>
+
+<head>
+    <title>XRP Payment Gateway</title>
+    <style>
+        html {
+            background-image: url(`http://localhost:${PORT}/wood.png`);
+            padding: 40px;
+        }
+
+        body {
+            text-align: center;
+        }
+
+        #payment-box {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            height: 70%;
+            width: 70%;
+            margin: auto;
+        }
+
+        #status {
+            color: cyan;
+            font-size: 28px;
+        }
+
+        * {
+            color: cyan;
+        }
+
+        .float-left {
+            float: left;
+            text-align: left;
+        }
+
+        .float-right {
+            float: right;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="payment-box">
+        <div class="float-left">
+            <img id="qr-image" src>
+        </div>
+        <div class="float-right">
+            <h2 id="address">LOADING ADDRESS</h2>
+            <h2 id="amount">LOADING AMOUNT</h3>
+                <h4 id="product">LOADING PRODUCT</h4>
+                <h4 id="status">LOADING STATUS</h4>
+                <h4>Note that you dont need to provide a DT (Destination Tag/Memo)</h4>
+                <h4 id="tranuuid">Transaction UUID: (For Support)</h5>
+        </div>
+    </div>
+    <script>
+        document.getElementById('product').innerHTML = new URL(window.location.href).searchParams.get('prodName')
+        document.getElementById('tranuuid').innerHTML = `Transaction UUID: " ${new URL(window.location.href).searchParams.get('id')} " (For Support)`
+        fetch('/payment-port-get')
+            .then(r => {
+                r.json().then(p => {
+                    let socket = new WebSocket("ws://localhost:"+p.PORT);
+                    socket.onopen = (e) => {
+                        console.debug('Connection Established')
+                        socket.send(window.location.href)
+                    }
+                    var address;
+                    var amount = new URL(window.location.href).searchParams.get('amt');
+                    var status;
+                    socket.onmessage = (m) => {
+                        var message = m.data;
+                        console.log(message)
+                        if (message.indexOf('ADDRESS') !== -1) {
+                            address = message.split(' ')[1]
+                            document.getElementById('address').innerHTML = 'XRP Address: ' + address
+                            var parametersJson = {
+                                "size": 400, // Size of Qr Code
+                                "backgroundColor": "255-255-255", // Background Color Of Qr Code (In RGB)
+                                "qrColor": "0-0-0", // Color of Qr Code (In RGB)
+                                "padding": 2, // Padding 
+                                "data": `${address}?amount=${amount}`
+                            };
+
+                            var parameters;
+
+                            var img = document.getElementById("qr-image");
+
+                            parameters = `size=${parametersJson.size}&bgcolor=${parametersJson.backgroundColor}&color=${parametersJson.qrColor}&qzone=${parametersJson.padding}&data=${parametersJson.data}` // Stitch Together all Paramenters
+                            img.src = `https://api.qrserver.com/v1/create-qr-code/?${parameters}` // Set Image URL To Link
+                        } else if (message.indexOf('SUCCESS ') !== -1 && message.length > 10) {
+                            console.log(message)
+                            status = message
+                            var txid = message.split(' ')[1]
+                            var end = `Success! <a href="https://blockexplorer.one/xrp/testnet/tx/${txid}">Transaction</a>`
+                            document.getElementById('status').innerHTML = end
+                        }
+                    }
+                })
+            })
+
+
+    </script>
+
+</body>
+
+</html>
