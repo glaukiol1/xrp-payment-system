@@ -1,5 +1,4 @@
 <html>
-
 <head>
     <title>XRP Payment Gateway</title>
     <style>
@@ -10,14 +9,22 @@
 
         body {
             text-align: center;
+            padding:15px;
         }
 
         #payment-box {
+<<<<<<< HEAD
             background-color: rgba(0, 0, 0, 0.5);
             padding: 15px;
+=======
+            background-color:rgba(0,0,0,0.4);
+            padding: 25px;
+>>>>>>> 05045a956827cbcc1c7ff2ceb8d7493f630e6ad8
             height: 70%;
-            width: 70%;
+            width: 65%;
             margin: auto;
+            border: 1px solid lightgray;
+            border-radius: 8px;
         }
 
         #status {
@@ -35,6 +42,7 @@
         }
 
         .float-right {
+            border-left:1px solid lightgray;
             float: right;
             text-align: center;
         }
@@ -49,10 +57,17 @@
         <div class="float-right">
             <h2 id="address">LOADING ADDRESS</h2>
             <h2 id="amount">LOADING AMOUNT</h3>
+<<<<<<< HEAD
                 <h4 id="product">LOADING PRODUCT</h4>
                 <h4 id="status">LOADING STATUS</h4>
                 <h4>Note that you dont need to provide a DT (Destination Tag/Memo)</h4>
                 <h4 id="tranuuid">Transaction UUID: (For Support)</h5>
+=======
+            <h4 id="product">LOADING PRODUCT</h4>
+            <h4 id="status">Not Yet Recived the XRP!</h4>
+            <h4> <strong>Note that you dont need to provide a DT (Destination Tag/Memo)</strong></h4>
+            <h5 id="tranuuid">Transaction UUID: (For Support)</h5>
+>>>>>>> 05045a956827cbcc1c7ff2ceb8d7493f630e6ad8
         </div>
     </div>
     <script>
