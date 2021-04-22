@@ -9,7 +9,7 @@ let api = new ripple.RippleAPI({ server: 'wss://s.altnet.rippletest.net:51233' }
 const addresses = JSON.parse( fs.readFileSync(path.join(__dirname, '../../../config/addresses.json')) )
 const addr_earning = addresses.earningAddress;
 
-module.exports = async function(product_info,addressReturn,onSuccess,onError,isDev)
+module.exports = async function(addressReturn,onSuccess,onError,isDev)
 {
 let address
 let secret
@@ -29,10 +29,11 @@ f.knownAddresses.push(
         secret
     }
 )
+console.log(address)
 f=JSON.stringify(f)
-fs.writeFileSync( fs.readFileSync(path.join(__dirname, '../../../config/addresses.json')), f)
+fs.writeFileSync( path.join(__dirname, '../../../config/addresses.json'), f)
 send_xrp(address,addr_earning.publicKey,addr_earning.secretKey,20,true)
-addressReturn(address+`#${product_info.amount}`)
+addressReturn(address)
 var i=0;
 var done=false;
 setTimeout( () => {
